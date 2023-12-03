@@ -3,8 +3,10 @@ package com.example.demo;
 import javafx.animation.Animation;
 import javafx.animation.Interpolator;
 import javafx.animation.RotateTransition;
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Camera;
 import javafx.scene.Group;
 import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
@@ -13,7 +15,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.Line;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Screen;
@@ -24,9 +25,9 @@ import java.util.Objects;
 
 public class Main extends Application {
     private double width;
-    private static final int PLANET_K = 50;
+    private static final int PLANET_K = 100;
     private static final int SPEED = 150;
-    public static final int SUN_SIZE = 86400 / 100;
+    public static final int SUN_SIZE = 864000 / 100;
     public static final int MERCURY_SIZE = 2439 / 100;
     public static final int VENUS_SIZE = 12104 / 100;
     public static final int EARTH_SIZE = 6371 / 100;
@@ -55,15 +56,11 @@ public class Main extends Application {
     public static final int MERCURY_SPIN_IN_HOURS = 58 * 243;
 
     public void start(Stage primaryStage) {
-
-
-
-        PerspectiveCamera camera = new PerspectiveCamera();
-        camera.setTranslateZ(MARS_SUN_DISTANCE);
+        Camera camera = new PerspectiveCamera();
         camera.setTranslateX(0);
         camera.setTranslateY(0);
-        //        camera.setRotationAxis(Rotate.Y_AXIS);
-        //        camera.setRotate(180);
+//        camera.setRotationAxis(Rotate.Y_AXIS);
+//        camera.setRotate(180);
 
         primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
             switch (keyEvent.getCode()) {
@@ -79,14 +76,19 @@ public class Main extends Application {
                 case D:
                     camera.setTranslateX(camera.getTranslateX() + SPEED);
                     break;
+                case Q:
+                    Rotate rotateYRight = new Rotate(5, Rotate.Y_AXIS); // Rotate by 45 degrees
+                    camera.getTransforms().add(rotateYRight);
+                    break;
+                case E:
+                    Rotate rotateYLeft = new Rotate(-5, Rotate.Y_AXIS); // Rotate by 45 degrees
+                    camera.getTransforms().add(rotateYLeft);
+                    break;
             }
         });
-        Group mainNode = fillWithPlanets(primaryStage);
-        addAxes(mainNode);
-
+        Group mainNode = createMainNode(primaryStage);
         Scene scene = createScene(mainNode);
         scene.setCamera(camera);
-
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -96,7 +98,8 @@ public class Main extends Application {
         return new Scene(mainNode, background);
     }
 
-    private Group fillWithPlanets(Stage primaryStage) {
+    private Group createMainNode(Stage primaryStage) {
+        initStage(primaryStage);
 
         Sphere sun = createPlanet(SUN_SIZE, 0, "/sunmap.jpg", 0, primaryStage);
         Sphere mercury = createPlanet(MERCURY_SIZE, MERCURY_SUN_DISTANCE, "/mercurymap.jpg", MERCURY_SPIN_IN_HOURS, primaryStage);
@@ -115,40 +118,22 @@ public class Main extends Application {
         return new Image(Objects.requireNonNull(this.getClass().getResourceAsStream(resourcePath)));
     }
 
-//    private void rotateAroundSun(Sphere planet) {
+//    private void rotateAroundSun() {
 //        earthOrbitAngle += earthOrbitSpeed; //advance angle in degrees
 //        var orbitAngleInRadians = earthOrbitAngle * Math.PI / 180; //convert to radians
 //
-//        //update position of earth...
+////update position of earth...
 //        earth.position.x = Math.cos(orbitAngleInRadians) * earthOrbitRadius;
 //        earth.position.z = Math.sin(orbitAngleInRadians) * earthOrbitRadius;
+//        return new Image(Objects.requireNonNull(this.getClass().getResourceAsStream(resourcePath)));
 //    }
-
-    private void addAxes(Group group) {
-        double axisLength =5000;
-
-        // X-axis (Red)
-        Line xAxis = new Line(0, axisLength, 0, 0);
-        xAxis.setStroke(Color.RED);
-        group.getChildren().add(xAxis);
-
-        // Y-axis (Green)
-        Line yAxis = new Line(0, 0, axisLength, 0);
-        yAxis.setStroke(Color.GREEN);
-        group.getChildren().add(yAxis);
-
-        // Z-axis (Blue)
-        Line zAxis = new Line(0, 0, 0, axisLength); // Negative Z-axis to face into the screen
-        zAxis.setStroke(Color.BLUE);
-        group.getChildren().add(zAxis);
-    }
-
+//
 
 
     private Sphere createPlanet(double size, double distance, String texturePath, int spinInHours, Stage primaryStage) {
         Sphere planet = new Sphere(relativeSize(size));
-//        planet.setLayoutX(primaryStage.getWidth() / 2);
-//        planet.setLayoutY(primaryStage.getHeight() / 2);
+        planet.setLayoutX(primaryStage.getWidth() / 2);
+        planet.setLayoutY(primaryStage.getHeight() / 2);
         planet.setTranslateZ(distance);
 
         PhongMaterial material = new PhongMaterial();
@@ -156,7 +141,6 @@ public class Main extends Application {
         planet.setMaterial(material);
 
         rotate(planet, spinInHours);
-//        rotateAroundSun();
 //        createPlanetOrbit(planet, spinInHours*10);
         return planet;
     }
@@ -168,15 +152,15 @@ public class Main extends Application {
         return rotate;
     }
 
-//    private void initStage(Stage primaryStage) {
-//        Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-//        primaryStage.setX(bounds.getMinX());
-//        primaryStage.setY(bounds.getMinY());
-//        primaryStage.setWidth(bounds.getWidth());
-//        primaryStage.setHeight(bounds.getHeight());
-//
-//        this.width = primaryStage.getWidth();
-//    }
+    private void initStage(Stage primaryStage) {
+        Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+        primaryStage.setX(bounds.getMinX());
+        primaryStage.setY(bounds.getMinY());
+        primaryStage.setWidth(bounds.getWidth());
+        primaryStage.setHeight(bounds.getHeight());
+
+        this.width = primaryStage.getWidth();
+    }
 
     private double relativeSize(double value) {
         return value * (1440d / width);
@@ -192,10 +176,6 @@ public class Main extends Application {
         rotateTransition.setInterpolator(Interpolator.LINEAR);
         rotateTransition.setCycleCount(Animation.INDEFINITE);
         rotateTransition.play();
-    }
-
-    public static void main(String[] args) {
-        launch();
     }
 
 }
