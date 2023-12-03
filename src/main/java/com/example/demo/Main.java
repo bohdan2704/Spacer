@@ -1,10 +1,8 @@
 package com.example.demo;
 
-import javafx.animation.Animation;
-import javafx.animation.Interpolator;
-import javafx.animation.RotateTransition;
-import javafx.animation.TranslateTransition;
+import javafx.animation.*;
 import javafx.application.Application;
+import javafx.geometry.Point3D;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Camera;
 import javafx.scene.Group;
@@ -15,17 +13,23 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.Objects;
+import java.util.Random;
 
 public class Main extends Application {
     private double width;
-    private static final int PLANET_K = 100;
+
+    private static Sphere SUN;
+    private static final int PLANET_K = 50;
     private static final int SPEED = 150;
     public static final int SUN_SIZE = 864000 / 100;
     public static final int MERCURY_SIZE = 2439 / 100;
@@ -55,14 +59,29 @@ public class Main extends Application {
     public static final int VENUS_SPIN_IN_HOURS = 24 * 243;
     public static final int MERCURY_SPIN_IN_HOURS = 58 * 243;
 
+    public static final int NEPTUNE_SPIN_IN_DAYS = 60190;
+    public static final int URANUS_SPIN_IN_DAYS = 30687;
+    public static final int SATURN_SPIN_IN_DAYS = 10759;
+    public static final int JUPITER_SPIN_IN_DAYS = 4333;
+    public static final int MARS_SPIN_IN_DAYS = 687;
+    public static final int EARTH_SPIN_IN_DAYS = 365;
+    public static final int VENUS_SPIN_IN_DAYS = 225;
+    public static final int MERCURY_SPIN_IN_DAYS = 88;
+
     public void start(Stage primaryStage) {
         Camera camera = new PerspectiveCamera();
-        camera.setTranslateX(0);
-        camera.setTranslateY(0);
-//        camera.setRotationAxis(Rotate.Y_AXIS);
-//        camera.setRotate(180);
 
         primaryStage.addEventHandler(KeyEvent.KEY_PRESSED, keyEvent -> {
+//            System.out.print(camera.getTranslateX());
+//            System.out.print(" ");
+//            System.out.print(camera.getTranslateY());
+//            System.out.print(" ");
+//            System.out.println(camera.getTranslateZ());
+//
+//            System.out.print(camera.getLayoutX());
+//            System.out.print(" ");
+//            System.out.println(camera.getLayoutY());
+
             switch (keyEvent.getCode()) {
                 case W:
                     camera.setTranslateZ(camera.getTranslateZ() + SPEED);
@@ -76,19 +95,31 @@ public class Main extends Application {
                 case D:
                     camera.setTranslateX(camera.getTranslateX() + SPEED);
                     break;
-                case Q:
-                    Rotate rotateYRight = new Rotate(5, Rotate.Y_AXIS); // Rotate by 45 degrees
-                    camera.getTransforms().add(rotateYRight);
+                case R:
+                    camera.setTranslateY(camera.getTranslateY() - SPEED);
                     break;
-                case E:
-                    Rotate rotateYLeft = new Rotate(-5, Rotate.Y_AXIS); // Rotate by 45 degrees
-                    camera.getTransforms().add(rotateYLeft);
+                case F:
+                    camera.setTranslateY(camera.getTranslateY() + SPEED);
+                    break;
+                case P:
+                    camera.setTranslateZ(camera.getTranslateZ() - 10 * SPEED);
+                    camera.setTranslateY(camera.getTranslateY() - SPEED);
                     break;
             }
         });
         Group mainNode = createMainNode(primaryStage);
         Scene scene = createScene(mainNode);
+//        camera.setFarClip(NEPTUNE_SUN_DISTANCE);
         scene.setCamera(camera);
+
+        camera.setTranslateX(0);
+        camera.setTranslateY(0);
+//        camera.setTranslateZ(MARS_SUN_DISTANCE);
+//        camera.setFarClip(NEPTUNE_SUN_DISTANCE);
+
+
+
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -101,55 +132,82 @@ public class Main extends Application {
     private Group createMainNode(Stage primaryStage) {
         initStage(primaryStage);
 
-        Sphere sun = createPlanet(SUN_SIZE, 0, "/sunmap.jpg", 0, primaryStage);
-        Sphere mercury = createPlanet(MERCURY_SIZE, MERCURY_SUN_DISTANCE, "/mercurymap.jpg", MERCURY_SPIN_IN_HOURS, primaryStage);
-        Sphere venus = createPlanet(VENUS_SIZE, VENUS_SUN_DISTANCE, "/venusmap.jpg", VENUS_SPIN_IN_HOURS, primaryStage);
-        Sphere earth = createPlanet(EARTH_SIZE, EARTH_SUN_DISTANCE, "/earthmap1k.jpg", EARTH_SPIN_IN_HOURS, primaryStage);
-        Sphere mars = createPlanet(MARS_SIZE, MARS_SUN_DISTANCE, "/mars_1k_color.jpg", MARS_SPIN_IN_HOURS, primaryStage);
-        Sphere jupiter = createPlanet(JUPITER_SIZE, JUPITER_SUN_DISTANCE, "/jupiter2_1k.jpg", JUPITER_SPIN_IN_HOURS, primaryStage);
-        Sphere saturn = createPlanet(SATURN_SIZE, SATURN_SUN_DISTANCE, "/saturnmap.jpg", SATURN_SPIN_IN_HOURS, primaryStage);
-        Sphere uranus = createPlanet(URANUS_SIZE, URANUS_SUN_DISTANCE, "/uranusmap.jpg", URANUS_SPIN_IN_HOURS, primaryStage);
-        Sphere neptune = createPlanet(NEPTUNE_SIZE, NEPTUNE_SUN_DISTANCE, "/neptunemap.jpg", NEPTUNE_SPIN_IN_HOURS, primaryStage);
+        SUN = createPlanet(SUN_SIZE, 0, "/sunmap.jpg", 0, 0, primaryStage);
+        Sphere mercury = createPlanet(MERCURY_SIZE, MERCURY_SUN_DISTANCE, "/mercurymap.jpg", MERCURY_SPIN_IN_HOURS, MERCURY_SPIN_IN_DAYS, primaryStage);
+        Sphere venus = createPlanet(VENUS_SIZE, VENUS_SUN_DISTANCE, "/venusmap.jpg", VENUS_SPIN_IN_HOURS, VENUS_SPIN_IN_DAYS, primaryStage);
+        Sphere earth = createPlanet(EARTH_SIZE, EARTH_SUN_DISTANCE, "/earthmap1k.jpg", EARTH_SPIN_IN_HOURS, EARTH_SPIN_IN_DAYS, primaryStage);
+        Sphere mars = createPlanet(MARS_SIZE, MARS_SUN_DISTANCE, "/mars_1k_color.jpg", MARS_SPIN_IN_HOURS, MARS_SPIN_IN_DAYS, primaryStage);
+        Sphere jupiter = createPlanet(JUPITER_SIZE, JUPITER_SUN_DISTANCE, "/jupiter2_1k.jpg", JUPITER_SPIN_IN_HOURS, JUPITER_SPIN_IN_DAYS, primaryStage);
+        Sphere saturn = createPlanet(SATURN_SIZE, SATURN_SUN_DISTANCE, "/saturnmap.jpg", SATURN_SPIN_IN_HOURS, SATURN_SPIN_IN_DAYS, primaryStage);
+        Sphere uranus = createPlanet(URANUS_SIZE, URANUS_SUN_DISTANCE, "/uranusmap.jpg", URANUS_SPIN_IN_HOURS, URANUS_SPIN_IN_DAYS, primaryStage);
+        Sphere neptune = createPlanet(NEPTUNE_SIZE, NEPTUNE_SUN_DISTANCE, "/neptunemap.jpg", NEPTUNE_SPIN_IN_HOURS, NEPTUNE_SPIN_IN_DAYS, primaryStage);
 
-        return new Group(neptune, uranus, saturn, jupiter, mars, earth, venus, mercury, sun);
+//        rotateAroundSun(venus, VENUS_SPIN_IN_DAYS);
+//        rotateAroundSun(earth, EARTH_SPIN_IN_DAYS);
+//        rotateAroundSun(mars, MARS_SPIN_IN_DAYS);
+
+        return new Group(neptune, uranus, saturn, jupiter, mars, earth, venus, mercury, SUN);
     }
 
     private Image getImageFromResource(String resourcePath) {
         return new Image(Objects.requireNonNull(this.getClass().getResourceAsStream(resourcePath)));
     }
 
-//    private void rotateAroundSun() {
-//        earthOrbitAngle += earthOrbitSpeed; //advance angle in degrees
-//        var orbitAngleInRadians = earthOrbitAngle * Math.PI / 180; //convert to radians
-//
-////update position of earth...
-//        earth.position.x = Math.cos(orbitAngleInRadians) * earthOrbitRadius;
-//        earth.position.z = Math.sin(orbitAngleInRadians) * earthOrbitRadius;
-//        return new Image(Objects.requireNonNull(this.getClass().getResourceAsStream(resourcePath)));
-//    }
-//
+    private void rotateAroundSun(Sphere planet, int spinInDaysAroundSun) {
+        Rotate rotate = new Rotate();
+        rotate.setAxis(Rotate.Y_AXIS);
+        // Setting pivot points for the rotation
+//        System.out.println(planet.getTranslateZ());
+//        rotate.setPivotX(0);
+//        rotate.setPivotY(0);
+        rotate.setPivotZ(planet.getTranslateZ()*-20);
 
+        // Adding the transformation to rectangle
+        planet.getTransforms().addAll(rotate);
 
-    private Sphere createPlanet(double size, double distance, String texturePath, int spinInHours, Stage primaryStage) {
-        Sphere planet = new Sphere(relativeSize(size));
-        planet.setLayoutX(primaryStage.getWidth() / 2);
-        planet.setLayoutY(primaryStage.getHeight() / 2);
-        planet.setTranslateZ(distance);
+        // Create a Timeline for the rotation animation
+        Timeline timeline = getTimeline(spinInDaysAroundSun, rotate);
 
-        PhongMaterial material = new PhongMaterial();
-        material.setDiffuseMap(getImageFromResource(texturePath));
-        planet.setMaterial(material);
-
-        rotate(planet, spinInHours);
-//        createPlanetOrbit(planet, spinInHours*10);
-        return planet;
+        // Play the animation
+        timeline.play();
     }
 
-    private RotateTransition createPlanetOrbit(Sphere planet, int durationInSeconds) {
-        RotateTransition rotate = new RotateTransition(Duration.seconds(durationInSeconds), planet);
-        rotate.setByAngle(360); // One full orbit
-        rotate.setCycleCount(RotateTransition.INDEFINITE); // Repeat indefinitely
-        return rotate;
+    private static Timeline getTimeline(int spinInDaysAroundSun, Rotate rotate) {
+        Timeline timeline = new Timeline(
+                new KeyFrame(
+                        Duration.millis((double) spinInDaysAroundSun / MERCURY_SPIN_IN_DAYS),
+                        event -> {
+//                            System.out.print(planet.getTranslateX() + " ");
+//                            System.out.print(planet.getTranslateY() + " ");
+//                            System.out.println(planet.getTranslateZ());
+                            // Increment the rotation angle
+                            rotate.setAngle(rotate.getAngle() + 0.01);
+                        }
+                )
+        );
+
+        // Set the cycle count to indefinite for continuous rotation
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        return timeline;
+    }
+
+
+    private Sphere createPlanet(double size, double distance, String texturePath, int spinInHours, int spinAroundSunInDays, Stage primaryStage) {
+        Sphere planet = new Sphere(relativeSize(size));
+//        planet.setLayoutX(primaryStage.getWidth() / 2);
+//        planet.setLayoutY(primaryStage.getHeight() / 2);
+        planet.setTranslateZ(distance);
+//        Random r = new Random();
+//        planet.setTranslateX(r.nextInt()%10000);
+
+
+//        PhongMaterial material = new PhongMaterial();
+//        material.setDiffuseMap(getImageFromResource(texturePath));
+//        planet.setMaterial(material);
+
+//        rotate(planet, spinInHours);
+        rotateAroundSun(planet, spinAroundSunInDays);
+        return planet;
     }
 
     private void initStage(Stage primaryStage) {
