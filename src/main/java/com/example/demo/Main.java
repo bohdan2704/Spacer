@@ -29,9 +29,9 @@ public class Main extends Application {
     private double width;
 
     private static Sphere SUN;
-    private static final int PLANET_K = 50;
-    private static final int SPEED = 150;
-    public static final int SUN_SIZE = 864000 / 100;
+    private static final int PLANET_K = 45;
+    private static final int SPEED = 500;
+    public static final int SUN_SIZE = 86400 / 100;
     public static final int MERCURY_SIZE = 2439 / 100;
     public static final int VENUS_SIZE = 12104 / 100;
     public static final int EARTH_SIZE = 6371 / 100;
@@ -41,7 +41,7 @@ public class Main extends Application {
     public static final int URANUS_SIZE = 25362 / 100;
     public static final int NEPTUNE_SIZE = 24622 / 100;
 
-    public static final int MERCURY_SUN_DISTANCE = 57_900 / PLANET_K;
+    public static final int MERCURY_SUN_DISTANCE = 77_900 / PLANET_K;
     public static final int VENUS_SUN_DISTANCE = 108_200 / PLANET_K;
     public static final int EARTH_SUN_DISTANCE = 149_600 / PLANET_K;
     public static final int MARS_SUN_DISTANCE = 375_350 / PLANET_K;
@@ -102,8 +102,8 @@ public class Main extends Application {
                     camera.setTranslateY(camera.getTranslateY() + SPEED);
                     break;
                 case P:
-                    camera.setTranslateZ(camera.getTranslateZ() - 10 * SPEED);
-                    camera.setTranslateY(camera.getTranslateY() - SPEED);
+                    camera.setTranslateZ(camera.getTranslateZ() - 10);
+                    camera.setTranslateY(camera.getTranslateY() - 1);
                     break;
             }
         });
@@ -160,7 +160,7 @@ public class Main extends Application {
 //        System.out.println(planet.getTranslateZ());
 //        rotate.setPivotX(0);
 //        rotate.setPivotY(0);
-        rotate.setPivotZ(planet.getTranslateZ()*-20);
+        rotate.setPivotZ(planet.getTranslateZ()*-2);
 
         // Adding the transformation to rectangle
         planet.getTransforms().addAll(rotate);
@@ -181,7 +181,7 @@ public class Main extends Application {
 //                            System.out.print(planet.getTranslateY() + " ");
 //                            System.out.println(planet.getTranslateZ());
                             // Increment the rotation angle
-                            rotate.setAngle(rotate.getAngle() + 0.01);
+                            rotate.setAngle(rotate.getAngle() + 0.05);
                         }
                 )
         );
@@ -201,9 +201,9 @@ public class Main extends Application {
 //        planet.setTranslateX(r.nextInt()%10000);
 
 
-//        PhongMaterial material = new PhongMaterial();
-//        material.setDiffuseMap(getImageFromResource(texturePath));
-//        planet.setMaterial(material);
+        PhongMaterial material = new PhongMaterial();
+        material.setDiffuseMap(getImageFromResource(texturePath));
+        planet.setMaterial(material);
 
 //        rotate(planet, spinInHours);
         rotateAroundSun(planet, spinAroundSunInDays);
