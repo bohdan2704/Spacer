@@ -25,7 +25,7 @@ public class Space extends Application {
     private static Sphere SUN;
     private static final int PLANET_K = 50;
     private static final int SPEED = 500;
-    public static final int SUN_SIZE = 86400 / 100;
+    public static final int SUN_SIZE = 86400 / 50;
     public static final int MERCURY_SIZE = 2439 / 100;
     public static final int VENUS_SIZE = 12104 / 100;
     public static final int EARTH_SIZE = 6371 / 100;
@@ -202,7 +202,7 @@ public class Space extends Application {
         return value * (1440d / width);
     }
 
-    private void rotate(Sphere planet, int totalSpinInHours) {
+    public static void rotate(Sphere planet, int totalSpinInHours) {
         RotateTransition rotateTransition = new RotateTransition();
         rotateTransition.setNode(planet);
         rotateTransition.setDuration(Duration.seconds(totalSpinInHours));
