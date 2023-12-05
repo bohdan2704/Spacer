@@ -41,7 +41,8 @@
       <groupId>org.kordamp.bootstrapfx</groupId>
       <artifactId>bootstrapfx-core</artifactId>
       <version>0.4.0</version>
-    </dependency><dependency>
+    </dependency>
+    <dependency>
       <groupId>com.github.almasb</groupId>
       <artifactId>fxgl</artifactId>
       <version>17.2</version>
@@ -63,7 +64,8 @@
       <artifactId>junit-jupiter-engine</artifactId>
       <version>${junit.version}</version>
       <scope>test</scope>
-    </dependency>  </dependencies>
+    </dependency>
+  </dependencies>
 
   <build>
     <plugins>
@@ -76,6 +78,32 @@
           <target>21</target>
         </configuration>
       </plugin>
+
+      <plugin>
+        <groupId>com.github.wvengen</groupId>
+        <artifactId>proguard-maven-plugin</artifactId>
+        <version>2.3.1</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>proguard</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <proguardVersion>7.0.0</proguardVersion>
+          <options>
+            <!-- Add your ProGuard configuration here -->
+            <option>-dontwarn javafx.**</option>
+            <option>-keep class javafx.** { *; }</option>
+          </options>
+          <libs>
+            <!-- Add any additional libraries or dependencies here -->
+          </libs>
+        </configuration>
+      </plugin>
+
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>

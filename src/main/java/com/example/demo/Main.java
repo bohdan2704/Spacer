@@ -1,33 +1,11 @@
 package com.example.demo;
 
-import javafx.animation.*;
 import javafx.application.Application;
-import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
-import javafx.scene.Camera;
-import javafx.scene.Group;
-import javafx.scene.PerspectiveCamera;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.paint.PhongMaterial;
-import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Sphere;
-import javafx.scene.transform.Rotate;
-import javafx.scene.transform.Transform;
-import javafx.scene.transform.Translate;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.util.Duration;
-
-import java.util.Objects;
-import java.util.Random;
-
 
 // THREE PRESES WITH -R-
 public class Main extends Application {
@@ -40,7 +18,7 @@ public class Main extends Application {
         primaryStage.setTitle("Spacer");
 
         // Button to open Earth Window
-        Button button1 = new Button("Earth simulator");
+        Button button1 = new Button("Earth Model");
         button1.setOnAction(e -> {
             try {
                 openEarthWindow(primaryStage);
@@ -72,8 +50,8 @@ public class Main extends Application {
     }
 
     private void openEarthWindow(Stage stage) throws Exception {
-        Earh earh = new Earh();
-        earh.start(stage);
+        Earth earth = new Earth();
+        earth.start(stage);
     }
 
     // Method to open a new window

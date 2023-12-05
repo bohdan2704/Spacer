@@ -1,6 +1,5 @@
 package com.example.demo;
 
-import javafx.scene.layout.StackPane;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.control.Button;
@@ -33,7 +32,7 @@ import java.io.File;
 
 import static com.example.demo.Space.*;
 
-public class GalaxyWithSlider extends Application {
+public class Earth extends Application {
 
     private static final float WIDTH = 1000;
     private static final float HEIGHT = 600;
@@ -44,7 +43,7 @@ public class GalaxyWithSlider extends Application {
     private double anchorAngleY = 0;
     private final DoubleProperty angleX = new SimpleDoubleProperty(0);
     private final DoubleProperty angleY = new SimpleDoubleProperty(0);
-    private final Sphere sphere = new Sphere(150);
+    private final Sphere earth = new Sphere(150);
 
 
     @Override
@@ -99,7 +98,7 @@ public class GalaxyWithSlider extends Application {
         primaryStage.setTitle("Earth");
         primaryStage.setScene(scene);
 
-        rotate(sphere, 24);
+        rotate(earth, 24);
         prepareTimer();
         primaryStage.show();
     }
@@ -136,7 +135,7 @@ public class GalaxyWithSlider extends Application {
     }
 
     private ImageView prepareImageView() {
-        Image image = new Image(GalaxyWithSlider.class.getResourceAsStream("/galaxy.jpg"));
+        Image image = new Image(Earth.class.getResourceAsStream("/galaxy.jpg"));
         ImageView imageView = new ImageView(image);
         imageView.setPreserveRatio(true);
         imageView.getTransforms().add(new Translate(-image.getWidth() / 2, -image.getHeight() / 2, 800));
@@ -161,9 +160,9 @@ public class GalaxyWithSlider extends Application {
         earthMaterial.setSpecularMap(new Image(getClass().getResourceAsStream("/earth/earth-s.jpg")));
         earthMaterial.setBumpMap(new Image(getClass().getResourceAsStream("/earth/earth-n.jpg")));
 
-        sphere.setRotationAxis(Rotate.Y_AXIS);
-        sphere.setMaterial(earthMaterial);
-        return sphere;
+        earth.setRotationAxis(Rotate.Y_AXIS);
+        earth.setMaterial(earthMaterial);
+        return earth;
     }
 
     private Sphere prepareISS() {
@@ -171,7 +170,7 @@ public class GalaxyWithSlider extends Application {
         PhongMaterial material = new PhongMaterial(Color.BLUE);
         spaceStation.setMaterial(material);
 
-        spaceStation.setTranslateZ( -sphere.getRadius() - spaceStation.getRadius() );
+        spaceStation.setTranslateZ( -earth.getRadius() - spaceStation.getRadius() );
 
         Rotate rotate = new Rotate();
         rotate.setAxis(new Point3D(1, 1, 0));
@@ -191,8 +190,8 @@ public class GalaxyWithSlider extends Application {
     }
 
     private Sphere prepareMoon() {
-        Sphere moon = new Sphere(sphere.getRadius()*0.27);
-        moon.setTranslateZ( -sphere.getRadius() - moon.getRadius());
+        Sphere moon = new Sphere(earth.getRadius()*0.27);
+        moon.setTranslateZ( -earth.getRadius() - moon.getRadius());
 
         PhongMaterial material = new PhongMaterial();
         material.setDiffuseMap(new Image(this.getClass().getResourceAsStream("/moonmap1k.jpg")));

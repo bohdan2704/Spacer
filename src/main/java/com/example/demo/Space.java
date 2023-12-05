@@ -35,7 +35,7 @@ public class Space extends Application {
     public static final int URANUS_SIZE = 25362 / 100;
     public static final int NEPTUNE_SIZE = 24622 / 100;
 
-    public static final int MERCURY_SUN_DISTANCE = 77_900 / PLANET_K;
+    public static final int MERCURY_SUN_DISTANCE = 90_900 / PLANET_K;
     public static final int VENUS_SUN_DISTANCE = 108_200 / PLANET_K;
     public static final int EARTH_SUN_DISTANCE = 149_600 / PLANET_K;
     public static final int MARS_SUN_DISTANCE = 375_350 / PLANET_K;
